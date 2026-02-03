@@ -1,0 +1,102 @@
+<div class="container">
+  <header class="header">
+    <h1>{{ isEditing() ? 'Editar' : 'Nuevo' }} Equipo</h1>
+  </header>
+
+  @if (loading()) {
+    <div class="loading">Cargando...</div>
+  }
+
+  @if (error()) {
+    <div class="error">{{ error() }}</div>
+  }
+
+  @if (!loading()) {
+    <form (ngSubmit)="onSubmit()" class="form">
+      <div class="form-group">
+        <label for="nombre">Nombre *</label>
+        <input
+          type="text"
+          id="nombre"
+          [(ngModel)]="form.nombre"
+          name="nombre"
+          required
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="marca">Marca *</label>
+          <input
+            type="text"
+            id="marca"
+            [(ngModel)]="form.marca"
+            name="marca"
+            required
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="modelo">Modelo *</label>
+          <input
+            type="text"
+            id="modelo"
+            [(ngModel)]="form.modelo"
+            name="modelo"
+            required
+            class="form-control"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="estado">Estado *</label>
+          <select
+            id="estado"
+            [(ngModel)]="form.estado"
+            name="estado"
+            required
+            class="form-control"
+          >
+            <option value="">Seleccionar estado</option>
+            <option value="Nuevo">Nuevo</option>
+            <option value="Bueno">Bueno</option>
+            <option value="Regular">Regular</option>
+            <option value="Malo">Malo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="ambiente">Ambiente (Código)</label>
+          <select
+            id="ambiente"
+            (change)="onAmbienteChange($event)"
+            class="form-control"
+          >
+            <option value="">Sin asignar</option>
+            @for (ambiente of ambientes(); track ambiente.id) {
+              <option
+                [value]="ambiente.id"
+                [selected]="form.ambientecodigo === ambiente.codigo"
+              >
+                {{ ambiente.codigo }} - {{ ambiente.nombre }}
+              </option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+          {{ isEditing() ? 'Actualizar' : 'Crear' }}
+        </button>
+        <button type="button" (click)="cancel()" class="btn btn-secondary">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  }
+</div>

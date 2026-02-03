@@ -1,0 +1,3 @@
+-- Deshabilitar RLS temporalmente
+ALTER TABLE equipo DISABLE ROW LEVEL SECURITY;
+ALTER TABLE ambiente DISABLE ROW LEVEL SECURITY;

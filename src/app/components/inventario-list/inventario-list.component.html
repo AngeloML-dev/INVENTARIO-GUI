@@ -61,7 +61,7 @@
 
     <!-- Vista de tarjetas para mobile -->
     <div class="cards-container mobile-only">
-      @for (equipo of equiposPaginados(); track equipo.id) {
+      @for (equipo of equipos(); track equipo.id) {
         <div class="card">
           <div class="card-header">
             <span class="card-id">#{{ equipo.id }}</span>

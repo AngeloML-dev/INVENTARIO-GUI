@@ -23,9 +23,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th class="sortable" (click)="setSortField('id')">
-              ID {{ getSortIcon('id') }}
-            </th>
+            <th>ID</th>
             <th class="sortable" (click)="setSortField('nombre')">
               Nombre {{ getSortIcon('nombre') }}
             </th>
@@ -36,7 +34,9 @@
               Modelo {{ getSortIcon('modelo') }}
             </th>
             <th>Estado</th>
-            <th>Ambiente</th>
+            <th class="sortable" (click)="setSortField('ambientecodigo')">
+              Ambiente {{ getSortIcon('ambientecodigo') }}
+            </th>
             <th>Acciones</th>
           </tr>
         </thead>

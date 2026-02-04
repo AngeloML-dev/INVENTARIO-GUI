@@ -19,7 +19,7 @@ export class InventarioListComponent implements OnInit {
   readonly error = signal<string | null>(null);
 
   // Ordenamiento
-  readonly sortField = signal<'id' | 'nombre' | 'marca' | 'modelo'>('id');
+  readonly sortField = signal<'nombre' | 'marca' | 'modelo' | 'ambientecodigo'>('ambientecodigo');
   readonly sortOrder = signal<'asc' | 'desc'>('asc');
 
   // Paginación
@@ -32,9 +32,9 @@ export class InventarioListComponent implements OnInit {
     const field = this.sortField();
     const order = this.sortOrder();
     return [...this.equipos()].sort((a, b) => {
-      const aVal = a[field] || '';
-      const bVal = b[field] || '';
-      const comparison = aVal.toString().localeCompare(bVal.toString());
+      const aVal = (a[field] || '') as string;
+      const bVal = (b[field] || '') as string;
+      const comparison = aVal.localeCompare(bVal, undefined, { numeric: true, sensitivity: 'base' });
       return order === 'asc' ? comparison : -comparison;
     });
   });
@@ -66,7 +66,7 @@ export class InventarioListComponent implements OnInit {
     });
   }
 
-  setSortField(field: 'id' | 'nombre' | 'marca' | 'modelo'): void {
+  setSortField(field: 'nombre' | 'marca' | 'modelo' | 'ambientecodigo'): void {
     if (this.sortField() === field) {
       // Si ya está ordenado por este campo, cambiar dirección
       this.sortOrder.set(this.sortOrder() === 'asc' ? 'desc' : 'asc');

@@ -23,10 +23,18 @@
       <table class="table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Marca</th>
-            <th>Modelo</th>
+            <th class="sortable" (click)="setSortField('id')">
+              ID {{ getSortIcon('id') }}
+            </th>
+            <th class="sortable" (click)="setSortField('nombre')">
+              Nombre {{ getSortIcon('nombre') }}
+            </th>
+            <th class="sortable" (click)="setSortField('marca')">
+              Marca {{ getSortIcon('marca') }}
+            </th>
+            <th class="sortable" (click)="setSortField('modelo')">
+              Modelo {{ getSortIcon('modelo') }}
+            </th>
             <th>Estado</th>
             <th>Ambiente</th>
             <th>Acciones</th>

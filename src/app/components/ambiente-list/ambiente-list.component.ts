@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AmbienteService } from '../../services/ambiente.service';
@@ -65,7 +65,7 @@ import { Ambiente } from '../../models/equipo.model';
 
         <!-- Vista de tarjetas para mobile -->
         <div class="cards-container mobile-only">
-          @for (ambiente of ambientes(); track ambiente.id) {
+          @for (ambiente of ambientesPaginados(); track ambiente.id) {
             <div class="card">
               <div class="card-header">
                 <span class="card-codigo">{{ ambiente.codigo }}</span>
@@ -85,6 +85,27 @@ import { Ambiente } from '../../models/equipo.model';
             </div>
           } @empty {
             <div class="empty-card">No hay ambientes registrados</div>
+          }
+
+          <!-- Controles de paginación -->
+          @if (totalPages() > 1) {
+            <div class="pagination">
+              <button
+                class="btn btn-sm btn-secondary"
+                [disabled]="currentPage() === 1"
+                (click)="prevPage()">
+                ← Anterior
+              </button>
+              <span class="pagination-info">
+                Página {{ currentPage() }} de {{ totalPages() }}
+              </span>
+              <button
+                class="btn btn-sm btn-secondary"
+                [disabled]="currentPage() === totalPages()"
+                (click)="nextPage()">
+                Siguiente →
+              </button>
+            </div>
           }
         </div>
       }
@@ -175,6 +196,30 @@ import { Ambiente } from '../../models/equipo.model';
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
+    /* Paginación */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 1rem;
+    }
+
+    .pagination-info {
+      font-size: 0.875rem;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .pagination .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     .table {
       width: 100%;
       border-collapse: collapse;
@@ -241,6 +286,16 @@ export class AmbienteListComponent implements OnInit {
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
 
+  // Paginación
+  readonly pageSize = 10;
+  readonly currentPage = signal(1);
+  readonly totalPages = computed(() => Math.ceil(this.ambientes().length / this.pageSize));
+  readonly ambientesPaginados = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize;
+    const end = start + this.pageSize;
+    return this.ambientes().slice(start, end);
+  });
+
   ngOnInit(): void {
     this.loadAmbientes();
   }
@@ -252,6 +307,7 @@ export class AmbienteListComponent implements OnInit {
     this.ambienteService.getAll().subscribe({
       next: (data) => {
         this.ambientes.set(data);
+        this.currentPage.set(1); // Reset a primera página
         this.loading.set(false);
       },
       error: (err) => {
@@ -260,6 +316,18 @@ export class AmbienteListComponent implements OnInit {
         console.error(err);
       }
     });
+  }
+
+  nextPage(): void {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.set(this.currentPage() + 1);
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1);
+    }
   }
 
   deleteAmbiente(id: number): void {

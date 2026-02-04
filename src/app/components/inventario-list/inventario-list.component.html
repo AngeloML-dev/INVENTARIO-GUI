@@ -61,7 +61,7 @@
 
     <!-- Vista de tarjetas para mobile -->
     <div class="cards-container mobile-only">
-      @for (equipo of equipos(); track equipo.id) {
+      @for (equipo of equiposPaginados(); track equipo.id) {
         <div class="card">
           <div class="card-header">
             <span class="card-id">#{{ equipo.id }}</span>
@@ -85,6 +85,27 @@
         </div>
       } @empty {
         <div class="empty-card">No hay equipos registrados</div>
+      }
+
+      <!-- Controles de paginación -->
+      @if (totalPages() > 1) {
+        <div class="pagination">
+          <button
+            class="btn btn-sm btn-secondary"
+            [disabled]="currentPage() === 1"
+            (click)="prevPage()">
+            ← Anterior
+          </button>
+          <span class="pagination-info">
+            Página {{ currentPage() }} de {{ totalPages() }}
+          </span>
+          <button
+            class="btn btn-sm btn-secondary"
+            [disabled]="currentPage() === totalPages()"
+            (click)="nextPage()">
+            Siguiente →
+          </button>
+        </div>
       }
     </div>
   }

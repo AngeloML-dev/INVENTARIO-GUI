@@ -88,25 +88,23 @@ import { Ambiente } from '../../models/equipo.model';
           }
 
           <!-- Controles de paginación -->
-          @if (totalPages() > 1) {
-            <div class="pagination">
-              <button
-                class="btn btn-sm btn-secondary"
-                [disabled]="currentPage() === 1"
-                (click)="prevPage()">
-                ← Anterior
-              </button>
-              <span class="pagination-info">
-                Página {{ currentPage() }} de {{ totalPages() }}
-              </span>
-              <button
-                class="btn btn-sm btn-secondary"
-                [disabled]="currentPage() === totalPages()"
-                (click)="nextPage()">
-                Siguiente →
-              </button>
-            </div>
-          }
+          <div class="pagination">
+            <button
+              class="btn btn-sm btn-secondary"
+              [disabled]="currentPage() === 1"
+              (click)="prevPage()">
+              ← Anterior
+            </button>
+            <span class="pagination-info">
+              {{ ambientes().length }} ambientes - Página {{ currentPage() }} de {{ totalPages() }}
+            </span>
+            <button
+              class="btn btn-sm btn-secondary"
+              [disabled]="currentPage() === totalPages()"
+              (click)="nextPage()">
+              Siguiente →
+            </button>
+          </div>
         </div>
       }
     </div>

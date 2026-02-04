@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1770216050850,
+  "timestamp": 1770219258552,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -13,7 +13,7 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main-GLEVULSW.js",
+        "/main-5Q7EGJWK.js",
         "/manifest.webmanifest",
         "/styles-KCFBOMUS.css"
       ],
@@ -52,8 +52,8 @@
     "/icons/icon-72x72.png": "aa88a6096bd973be7f6d7a5489bfa6bc2463f8c4",
     "/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
     "/icons/logo-adex.png": "f20609d118646731cb62a00e0c50b922174881d6",
-    "/index.html": "049ce9feaa464d0723eccc90f1997b9c8030b69b",
-    "/main-GLEVULSW.js": "2a37b02ffb15e2f1faa5d2fe74fe8741469516bf",
+    "/index.html": "b8e5ed06e79593069636ecb16a327d4bd099fb4b",
+    "/main-5Q7EGJWK.js": "db269325eed25018649e86ca0b0631b79b74f5fd",
     "/manifest.webmanifest": "5ada32b4e19212415a0c8fee9fe04b40d1ab4c85",
     "/styles-KCFBOMUS.css": "6676038df0dcec9f943d0add8de0c07c760210d6"
   },

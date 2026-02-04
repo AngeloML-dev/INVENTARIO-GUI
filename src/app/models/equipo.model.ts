@@ -8,6 +8,7 @@ export interface Ambiente {
 export interface Equipo {
   id?: number;
   nombre: string;
+  descripcion?: string;
   marca: string;
   modelo: string;
   estado: string;

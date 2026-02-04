@@ -34,8 +34,14 @@
   color: white;
 }
 
-.card-id {
+.card-nombre {
   font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.card-descripcion {
+  margin: 0 0 0.5rem;
+  color: #666;
   font-size: 0.875rem;
 }
 

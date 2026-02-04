@@ -26,6 +26,7 @@ export class ProductoFormComponent implements OnInit {
 
   form: EquipoForm = {
     nombre: '',
+    descripcion: '',
     marca: '',
     modelo: '',
     estado: '',
@@ -62,6 +63,7 @@ export class ProductoFormComponent implements OnInit {
       next: (equipo) => {
         this.form = {
           nombre: equipo.nombre,
+          descripcion: equipo.descripcion || '',
           marca: equipo.marca,
           modelo: equipo.modelo,
           estado: equipo.estado,

@@ -23,10 +23,10 @@
       <table class="table">
         <thead>
           <tr>
-            <th>ID</th>
             <th class="sortable" (click)="setSortField('nombre')">
               Nombre {{ getSortIcon('nombre') }}
             </th>
+            <th>Descripción</th>
             <th class="sortable" (click)="setSortField('marca')">
               Marca {{ getSortIcon('marca') }}
             </th>
@@ -43,8 +43,8 @@
         <tbody>
           @for (equipo of equiposPaginados(); track equipo.id) {
             <tr>
-              <td>{{ equipo.id }}</td>
               <td>{{ equipo.nombre }}</td>
+              <td>{{ equipo.descripcion || '-' }}</td>
               <td>{{ equipo.marca }}</td>
               <td>{{ equipo.modelo }}</td>
               <td>{{ equipo.estado }}</td>
@@ -93,11 +93,13 @@
       @for (equipo of equipos(); track equipo.id) {
         <div class="card">
           <div class="card-header">
-            <span class="card-id">#{{ equipo.id }}</span>
+            <span class="card-nombre">{{ equipo.nombre }}</span>
             <span class="card-estado" [class]="equipo.estado?.toLowerCase()">{{ equipo.estado }}</span>
           </div>
           <div class="card-body" [routerLink]="['/equipos', equipo.id]">
-            <h3>{{ equipo.nombre }}</h3>
+            @if (equipo.descripcion) {
+              <p class="card-descripcion">{{ equipo.descripcion }}</p>
+            }
             <p class="card-marca">{{ equipo.marca }} - {{ equipo.modelo }}</p>
             <p class="card-ambiente" *ngIf="equipo.ambientecodigo">
               📍 {{ equipo.ambientecodigo }}

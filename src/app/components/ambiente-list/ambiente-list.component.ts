@@ -62,7 +62,7 @@ import { Ambiente } from '../../models/equipo.model';
             </tbody>
           </table>
 
-          <!-- Controles de paginación -->
+          <!-- Controles de paginación (ESCRITORIO) -->
           @if (totalPages() > 1) {
             <div class="pagination">
               <button

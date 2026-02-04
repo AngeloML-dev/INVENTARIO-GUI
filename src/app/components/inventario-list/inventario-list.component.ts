@@ -163,12 +163,6 @@ export class InventarioListComponent implements OnInit {
     }
   }
 
-  goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages()) {
-      this.currentPage.set(page);
-    }
-  }
-
   deleteEquipo(id: number): void {
     if (confirm('¿Estás seguro de eliminar este equipo?')) {
       this.equipoService.delete(id).subscribe({

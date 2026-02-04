@@ -42,8 +42,8 @@
 
 .form-control:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+  border-color: #0055A4;
+  box-shadow: 0 0 0 2px rgba(0, 85, 164, 0.25);
 }
 
 .form-row {
@@ -71,12 +71,12 @@
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background-color: #0055A4;
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #0056b3;
+  background-color: #004080;
 }
 
 .btn-secondary {

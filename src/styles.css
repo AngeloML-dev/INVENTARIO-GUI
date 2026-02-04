@@ -52,13 +52,14 @@ input, select, textarea {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #0055A4;
   color: white;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 85, 164, 0.4);
+  background: #004080;
 }
 
 .btn-secondary {
@@ -87,7 +88,7 @@ input, select, textarea {
 
 .form-control:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0055A4;
 }
 
 .form-group {
@@ -130,7 +131,7 @@ input, select, textarea {
 }
 
 .table th {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #0055A4;
   color: white;
   font-weight: 600;
   text-transform: uppercase;
@@ -219,7 +220,7 @@ input, select, textarea {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #0055A4;
   padding: 2rem;
 }
 
@@ -244,7 +245,7 @@ input, select, textarea {
   padding: 1rem 4rem;
   font-size: 1.25rem;
   background: white;
-  color: #667eea;
+  color: #0055A4;
   border-radius: 50px;
   font-weight: 600;
 }
@@ -296,7 +297,7 @@ input, select, textarea {
 
 .menu-card h2 {
   margin: 0 0 0.5rem;
-  color: #667eea;
+  color: #0055A4;
   font-size: 1.5rem;
 }
 

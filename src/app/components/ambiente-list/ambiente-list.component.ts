@@ -129,7 +129,7 @@ import { Ambiente } from '../../models/equipo.model';
       justify-content: space-between;
       align-items: center;
       padding: 0.75rem 1rem;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #0055A4;
       color: white;
     }
 
@@ -150,7 +150,7 @@ import { Ambiente } from '../../models/equipo.model';
 
     .card-ubicacion {
       margin: 0;
-      color: #667eea;
+      color: #0055A4;
       font-size: 0.875rem;
       font-weight: 500;
     }
@@ -192,7 +192,7 @@ import { Ambiente } from '../../models/equipo.model';
     }
 
     .table th {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #0055A4;
       color: white;
     }
 

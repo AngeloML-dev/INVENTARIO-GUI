@@ -40,7 +40,7 @@ import { Ambiente } from '../../models/equipo.model';
               </tr>
             </thead>
             <tbody>
-              @for (ambiente of ambientes(); track ambiente.id) {
+              @for (ambiente of ambientesPaginados(); track ambiente.id) {
                 <tr>
                   <td>{{ ambiente.codigo }}</td>
                   <td>{{ ambiente.nombre }}</td>
@@ -61,11 +61,32 @@ import { Ambiente } from '../../models/equipo.model';
               }
             </tbody>
           </table>
+
+          <!-- Controles de paginación -->
+          @if (totalPages() > 1) {
+            <div class="pagination">
+              <button
+                class="btn btn-sm btn-secondary"
+                [disabled]="currentPage() === 1"
+                (click)="prevPage()">
+                ← Anterior
+              </button>
+              <span class="pagination-info">
+                {{ ambientes().length }} ambientes - Página {{ currentPage() }} de {{ totalPages() }}
+              </span>
+              <button
+                class="btn btn-sm btn-secondary"
+                [disabled]="currentPage() === totalPages()"
+                (click)="nextPage()">
+                Siguiente →
+              </button>
+            </div>
+          }
         </div>
 
         <!-- Vista de tarjetas para mobile -->
         <div class="cards-container mobile-only">
-          @for (ambiente of ambientesPaginados(); track ambiente.id) {
+          @for (ambiente of ambientes(); track ambiente.id) {
             <div class="card">
               <div class="card-header">
                 <span class="card-codigo">{{ ambiente.codigo }}</span>
@@ -86,25 +107,6 @@ import { Ambiente } from '../../models/equipo.model';
           } @empty {
             <div class="empty-card">No hay ambientes registrados</div>
           }
-
-          <!-- Controles de paginación -->
-          <div class="pagination">
-            <button
-              class="btn btn-sm btn-secondary"
-              [disabled]="currentPage() === 1"
-              (click)="prevPage()">
-              ← Anterior
-            </button>
-            <span class="pagination-info">
-              {{ ambientes().length }} ambientes - Página {{ currentPage() }} de {{ totalPages() }}
-            </span>
-            <button
-              class="btn btn-sm btn-secondary"
-              [disabled]="currentPage() === totalPages()"
-              (click)="nextPage()">
-              Siguiente →
-            </button>
-          </div>
         </div>
       }
     </div>

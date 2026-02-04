@@ -9,6 +9,7 @@ export interface Equipo {
   id?: number;
   nombre: string;
   descripcion?: string;
+  piso?: string;
   marca: string;
   modelo: string;
   estado: string;

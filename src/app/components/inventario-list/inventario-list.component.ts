@@ -18,6 +18,15 @@ export class InventarioListComponent implements OnInit {
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
 
+  // Menú flotante de filtros
+  readonly showFilters = signal(false);
+
+  // Filtros
+  readonly filterPiso = signal('');
+  readonly filterEstado = signal('');
+  readonly filterAmbiente = signal('');
+  readonly filterSearch = signal('');
+
   // Ordenamiento
   readonly sortField = signal<'nombre' | 'marca' | 'modelo' | 'ambientecodigo'>('ambientecodigo');
   readonly sortOrder = signal<'asc' | 'desc'>('asc');
@@ -26,23 +35,73 @@ export class InventarioListComponent implements OnInit {
   readonly pageSize = 10;
   readonly currentPage = signal(1);
 
-  readonly totalPages = computed(() => Math.ceil(this.equiposOrdenados().length / this.pageSize));
+  // Opciones de filtros
+  readonly estados = ['Nuevo', 'Usado', 'Desgastado', 'Obsoleto'];
+  readonly pisos = ['Sótano', 'Piso 1', 'Piso 2', 'Piso 3', 'Piso 4', 'Piso 5', 'Piso 6', 'Piso 7', 'Piso 8'];
 
-  readonly equiposOrdenados = computed(() => {
+  // Ambientes únicos (calculados)
+  readonly ambientes = computed(() => {
+    const ambientesSet = new Set<string>();
+    this.equipos().forEach(e => {
+      if (e.ambientecodigo) ambientesSet.add(e.ambientecodigo);
+    });
+    return Array.from(ambientesSet).sort((a, b) =>
+      a.localeCompare(b, undefined, { numeric: true })
+    );
+  });
+
+  readonly totalPages = computed(() => Math.ceil(this.equiposFiltradosOrdenados().length / this.pageSize));
+
+  readonly equiposFiltradosOrdenados = computed(() => {
+    let result = [...this.equipos()];
+
+    // Aplicar filtros
+    const piso = this.filterPiso();
+    const estado = this.filterEstado().toLowerCase();
+    const ambiente = this.filterAmbiente().toLowerCase();
+    const search = this.filterSearch().toLowerCase();
+
+    if (piso) {
+      result = result.filter(e => e.piso === piso);
+    }
+
+    if (estado) {
+      result = result.filter(e =>
+        e.estado?.toLowerCase() === estado
+      );
+    }
+
+    if (ambiente) {
+      result = result.filter(e =>
+        e.ambientecodigo?.toLowerCase().includes(ambiente)
+      );
+    }
+
+    if (search) {
+      result = result.filter(e =>
+        e.nombre?.toLowerCase().includes(search) ||
+        e.marca?.toLowerCase().includes(search) ||
+        e.modelo?.toLowerCase().includes(search)
+      );
+    }
+
+    // Aplicar ordenamiento
     const field = this.sortField();
     const order = this.sortOrder();
-    return [...this.equipos()].sort((a, b) => {
+    result.sort((a, b) => {
       const aVal = (a[field] || '') as string;
       const bVal = (b[field] || '') as string;
       const comparison = aVal.localeCompare(bVal, undefined, { numeric: true, sensitivity: 'base' });
       return order === 'asc' ? comparison : -comparison;
     });
+
+    return result;
   });
 
   readonly equiposPaginados = computed(() => {
     const start = (this.currentPage() - 1) * this.pageSize;
     const end = start + this.pageSize;
-    return this.equiposOrdenados().slice(start, end);
+    return this.equiposFiltradosOrdenados().slice(start, end);
   });
 
   ngOnInit(): void {
@@ -66,12 +125,22 @@ export class InventarioListComponent implements OnInit {
     });
   }
 
+  toggleFilters(): void {
+    this.showFilters.update(v => !v);
+  }
+
+  clearFilters(): void {
+    this.filterPiso.set('');
+    this.filterEstado.set('');
+    this.filterAmbiente.set('');
+    this.filterSearch.set('');
+    this.currentPage.set(1);
+  }
+
   setSortField(field: 'nombre' | 'marca' | 'modelo' | 'ambientecodigo'): void {
     if (this.sortField() === field) {
-      // Si ya está ordenado por este campo, cambiar dirección
       this.sortOrder.set(this.sortOrder() === 'asc' ? 'desc' : 'asc');
     } else {
-      // Nuevo campo, ordenar ascendente por defecto
       this.sortField.set(field);
       this.sortOrder.set('asc');
     }
@@ -91,6 +160,12 @@ export class InventarioListComponent implements OnInit {
   prevPage(): void {
     if (this.currentPage() > 1) {
       this.currentPage.set(this.currentPage() - 1);
+    }
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.currentPage.set(page);
     }
   }
 

@@ -118,6 +118,121 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Header actions */
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Botón de filtros */
+.btn-filter {
+  background: #0055A4;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-filter:hover {
+  background: #004080;
+}
+
+/* Menú flotante de filtros */
+.filter-panel {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #0055A4;
+  color: white;
+}
+
+.filter-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.filter-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.filter-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.filter-group .form-control {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.filter-group .form-control:focus {
+  outline: none;
+  border-color: #0055A4;
+  box-shadow: 0 0 0 2px rgba(0, 85, 164, 0.2);
+}
+
+/* Resumen de filtros activos */
+.filter-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #e8f4ff;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #0055A4;
+}
+
+.filter-tag {
+  background: #0055A4;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
 /* Paginación */
 .pagination {
   display: flex;
@@ -129,12 +244,30 @@
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.pagination-pages {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.pagination .btn-sm {
+  min-width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pagination-info {
   font-size: 0.875rem;
   color: #666;
   font-weight: 500;
+  width: 100%;
+  text-align: center;
+  margin-top: 0.5rem;
 }
 
 .pagination .btn:disabled {
@@ -166,4 +299,22 @@
     width: 100%;
     justify-content: space-between;
   }
+
+  .filter-content {
+    grid-template-columns: 1fr;
+  }
+
+  .pagination-pages {
+    overflow-x: auto;
+    padding: 0.5rem;
+  }
 }
+
+/* Card piso */
+.card-piso {
+  margin: 0 0 0.5rem;
+  color: #0055A4;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+

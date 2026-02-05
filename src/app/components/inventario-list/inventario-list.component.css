@@ -287,6 +287,41 @@
   }
 }
 
+/* Estilos para botón Volver */
+.btn-volver {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #0055A4;
+  background: white;
+  border: 2px solid #0055A4;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-volver:hover {
+  background: #0055A4;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 85, 164, 0.4);
+  transform: translateX(-4px);
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-title h1 {
+  margin: 0;
+}
+
 /* Card piso */
 .card-piso {
   margin: 0 0 0.5rem;

@@ -24,7 +24,11 @@
     <div class="categorias-grid">
       @for (cat of categorias; track cat) {
         <div class="categoria-card" (click)="selectCategoria(cat)">
-          <div class="categoria-icon">{{ getCategoriaIcon(cat) }}</div>
+          @if (getCategoriaIcon(cat).endsWith('.png') || getCategoriaIcon(cat).endsWith('.jpg') || getCategoriaIcon(cat).endsWith('.svg')) {
+            <img [src]="'icons/' + getCategoriaIcon(cat)" [alt]="cat" class="categoria-img">
+          } @else {
+            <div class="categoria-icon">{{ getCategoriaIcon(cat) }}</div>
+          }
           <div class="categoria-nombre">{{ cat }}</div>
           <div class="categoria-count">{{ equiposPorCategoria()[cat] || 0 }} equipos</div>
         </div>

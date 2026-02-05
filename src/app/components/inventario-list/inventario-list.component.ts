@@ -197,8 +197,8 @@ export class InventarioListComponent implements OnInit {
       'Computadoras': '💻',
       'Monitores': '🖥️',
       'Parlantes': '🔊',
-      'Proyectores': '📽️',
-      'Controles': '📺'
+      'Proyectores': 'icon-proyector.png',
+      'Controles': 'icon-control.png'
     };
     return iconos[categoria] || '📦';
   }

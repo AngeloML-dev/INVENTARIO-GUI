@@ -341,6 +341,13 @@
   display: inline-block;
 }
 
+.categoria-img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  margin-bottom: 0.75rem;
+}
+
 /* Responsive grid de categorías */
 @media (max-width: 600px) {
   .categorias-grid {

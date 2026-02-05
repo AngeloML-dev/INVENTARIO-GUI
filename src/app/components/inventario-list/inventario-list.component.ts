@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { EquipoService } from '../../services/equipo.service';
-import { Equipo } from '../../models/equipo.model';
+import { Equipo, CATEGORIAS_EQUIPO } from '../../models/equipo.model';
 
 @Component({
   selector: 'app-inventario-list',
@@ -17,6 +17,10 @@ export class InventarioListComponent implements OnInit {
   readonly equipos = signal<Equipo[]>([]);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
+
+  // Categoría seleccionada
+  readonly categorias = CATEGORIAS_EQUIPO;
+  readonly selectedCategoria = signal<string | null>(null);
 
   // Menú flotante de filtros
   readonly showFilters = signal(false);
@@ -39,10 +43,24 @@ export class InventarioListComponent implements OnInit {
   readonly estados = ['Nuevo', 'Usado', 'Desgastado', 'Obsoleto'];
   readonly pisos = ['Sótano', 'Piso 1', 'Piso 2', 'Piso 3', 'Piso 4', 'Piso 5', 'Piso 6', 'Piso 7', 'Piso 8'];
 
+  // Equipos por categoría (calculados)
+  readonly equiposPorCategoria = computed(() => {
+    const categoriasCount: Record<string, number> = {};
+    this.categorias.forEach(cat => categoriasCount[cat] = 0);
+
+    this.equipos().forEach(e => {
+      if (e.categoria && categoriasCount.hasOwnProperty(e.categoria)) {
+        categoriasCount[e.categoria]++;
+      }
+    });
+
+    return categoriasCount;
+  });
+
   // Ambientes únicos (calculados)
   readonly ambientes = computed(() => {
     const ambientesSet = new Set<string>();
-    this.equipos().forEach(e => {
+    this.equiposFiltrados().forEach(e => {
       if (e.ambientecodigo) ambientesSet.add(e.ambientecodigo);
     });
     return Array.from(ambientesSet).sort((a, b) =>
@@ -52,8 +70,19 @@ export class InventarioListComponent implements OnInit {
 
   readonly totalPages = computed(() => Math.ceil(this.equiposFiltradosOrdenados().length / this.pageSize));
 
-  readonly equiposFiltradosOrdenados = computed(() => {
+  readonly equiposFiltrados = computed(() => {
     let result = [...this.equipos()];
+    const categoria = this.selectedCategoria();
+
+    if (categoria) {
+      result = result.filter(e => e.categoria === categoria);
+    }
+
+    return result;
+  });
+
+  readonly equiposFiltradosOrdenados = computed(() => {
+    let result = this.equiposFiltrados();
 
     // Aplicar filtros
     const piso = this.filterPiso();
@@ -125,6 +154,17 @@ export class InventarioListComponent implements OnInit {
     });
   }
 
+  selectCategoria(categoria: string): void {
+    this.selectedCategoria.set(categoria);
+    this.currentPage.set(1);
+    this.clearFilters();
+  }
+
+  clearCategoria(): void {
+    this.selectedCategoria.set(null);
+    this.currentPage.set(1);
+  }
+
   toggleFilters(): void {
     this.showFilters.update(v => !v);
   }
@@ -149,6 +189,18 @@ export class InventarioListComponent implements OnInit {
   getSortIcon(field: string): string {
     if (this.sortField() !== field) return '↕';
     return this.sortOrder() === 'asc' ? '↑' : '↓';
+  }
+
+  getCategoriaIcon(categoria: string): string {
+    const iconos: Record<string, string> = {
+      'Micrófonos': '🎤',
+      'Computadoras': '💻',
+      'Monitores': '🖥️',
+      'Parlantes': '🔊',
+      'Proyectores': '📽️',
+      'Controles': '🎮'
+    };
+    return iconos[categoria] || '📦';
   }
 
   nextPage(): void {

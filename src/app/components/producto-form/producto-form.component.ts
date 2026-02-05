@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EquipoService } from '../../services/equipo.service';
 import { AmbienteService } from '../../services/ambiente.service';
-import { EquipoForm, Ambiente } from '../../models/equipo.model';
+import { EquipoForm, Ambiente, CATEGORIAS_EQUIPO } from '../../models/equipo.model';
 
 @Component({
   selector: 'app-producto-form',
@@ -23,11 +23,13 @@ export class ProductoFormComponent implements OnInit {
   readonly error = signal<string | null>(null);
 
   readonly ambientes = signal<Ambiente[]>([]);
+  readonly categorias = CATEGORIAS_EQUIPO;
 
   form: EquipoForm = {
     nombre: '',
     descripcion: '',
     piso: '',
+    categoria: '',
     marca: '',
     modelo: '',
     estado: '',
@@ -66,6 +68,7 @@ export class ProductoFormComponent implements OnInit {
           nombre: equipo.nombre,
           descripcion: equipo.descripcion || '',
           piso: equipo.piso || '',
+          categoria: equipo.categoria || '',
           marca: equipo.marca,
           modelo: equipo.modelo,
           estado: equipo.estado,

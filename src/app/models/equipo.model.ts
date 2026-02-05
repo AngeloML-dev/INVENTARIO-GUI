@@ -10,12 +10,23 @@ export interface Equipo {
   nombre: string;
   descripcion?: string;
   piso?: string;
+  categoria?: string;
   marca: string;
   modelo: string;
   estado: string;
   ambientecodigo?: string;
   ambientenombre?: string;
 }
+
+// Categorías de equipos
+export const CATEGORIAS_EQUIPO = [
+  'Micrófonos',
+  'Computadoras',
+  'Monitores',
+  'Parlantes',
+  'Proyectores',
+  'Controles'
+];
 
 export type EquipoForm = Omit<Equipo, 'id'>;
 

@@ -2,20 +2,38 @@
   <header class="header">
     <div>
       <a routerLink="/menu" class="btn btn-secondary btn-sm">← Volver</a>
-      <h1>Equipos</h1>
+      <h1>{{ selectedCategoria() ? selectedCategoria() : 'Equipos' }}</h1>
     </div>
     <div class="header-actions">
+      @if (selectedCategoria()) {
+        <button class="btn btn-secondary" (click)="clearCategoria()">
+          ← Ver todas las categorías
+        </button>
+      }
       <button class="btn btn-filter" (click)="toggleFilters()">
         🔍 Filtros
       </button>
-      <a routerLink="/equipos/nuevo" class="btn btn-primary">
+      <a routerLink="/equipos/nuevo" class="btn btn-primary" [class.disabled]="!selectedCategoria()">
         + Agregar
       </a>
     </div>
   </header>
 
+  <!-- Menú de Categorías (cuando no hay categoría seleccionada) -->
+  @if (!selectedCategoria()) {
+    <div class="categorias-grid">
+      @for (cat of categorias; track cat) {
+        <div class="categoria-card" (click)="selectCategoria(cat)">
+          <div class="categoria-icon">{{ getCategoriaIcon(cat) }}</div>
+          <div class="categoria-nombre">{{ cat }}</div>
+          <div class="categoria-count">{{ equiposPorCategoria()[cat] || 0 }} equipos</div>
+        </div>
+      }
+    </div>
+  }
+
   <!-- Menú Flotante de Filtros -->
-  @if (showFilters()) {
+  @if (showFilters() && selectedCategoria()) {
     <div class="filter-panel">
       <div class="filter-header">
         <h3>Filtros</h3>
@@ -75,7 +93,7 @@
 
   @if (!loading() && !error()) {
     <!-- Resumen de filtros activos -->
-    @if (filterPiso() || filterEstado() || filterAmbiente() || filterSearch()) {
+    @if ((filterPiso() || filterEstado() || filterAmbiente() || filterSearch()) && selectedCategoria()) {
       <div class="filter-summary">
         <span>Filtros activos:</span>
         @if (filterPiso()) { <span class="filter-tag">Piso: {{ filterPiso() }}</span> }
@@ -85,110 +103,112 @@
       </div>
     }
 
-    <!-- Vista de tabla para desktop -->
-    <div class="table-container desktop-only">
-      <table class="table">
-        <thead>
-          <tr>
-            <th class="sortable" (click)="setSortField('nombre')">
-              Nombre {{ getSortIcon('nombre') }}
-            </th>
-            <th>Piso</th>
-            <th>Descripción</th>
-            <th class="sortable" (click)="setSortField('marca')">
-              Marca {{ getSortIcon('marca') }}
-            </th>
-            <th class="sortable" (click)="setSortField('modelo')">
-              Modelo {{ getSortIcon('modelo') }}
-            </th>
-            <th>Estado</th>
-            <th class="sortable" (click)="setSortField('ambientecodigo')">
-              Ambiente {{ getSortIcon('ambientecodigo') }}
-            </th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (equipo of equiposPaginados(); track equipo.id) {
+    <!-- Vista de tabla para desktop (solo si hay categoría seleccionada) -->
+    @if (selectedCategoria()) {
+      <div class="table-container desktop-only">
+        <table class="table">
+          <thead>
             <tr>
-              <td>{{ equipo.nombre }}</td>
-              <td>{{ equipo.piso || '-' }}</td>
-              <td>{{ equipo.descripcion || '-' }}</td>
-              <td>{{ equipo.marca }}</td>
-              <td>{{ equipo.modelo }}</td>
-              <td>{{ equipo.estado }}</td>
-              <td>{{ equipo.ambientecodigo || 'Sin asignar' }}</td>
-              <td class="actions">
-                <a [routerLink]="['/equipos', equipo.id]" class="btn btn-sm btn-edit">
-                  Editar
-                </a>
-                <button (click)="deleteEquipo(equipo.id!)" class="btn btn-sm btn-delete">
-                  Eliminar
-                </button>
-              </td>
+              <th class="sortable" (click)="setSortField('nombre')">
+                Nombre {{ getSortIcon('nombre') }}
+              </th>
+              <th>Piso</th>
+              <th>Descripción</th>
+              <th class="sortable" (click)="setSortField('marca')">
+                Marca {{ getSortIcon('marca') }}
+              </th>
+              <th class="sortable" (click)="setSortField('modelo')">
+                Modelo {{ getSortIcon('modelo') }}
+              </th>
+              <th>Estado</th>
+              <th class="sortable" (click)="setSortField('ambientecodigo')">
+                Ambiente {{ getSortIcon('ambientecodigo') }}
+              </th>
+              <th>Acciones</th>
             </tr>
-          } @empty {
-            <tr>
-              <td colspan="8" class="empty">No hay equipos</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-
-      <!-- Controles de paginación (ESCRITORIO) -->
-      @if (totalPages() > 1) {
-        <div class="pagination">
-          <button
-            class="btn btn-sm btn-secondary"
-            [disabled]="currentPage() === 1"
-            (click)="prevPage()">
-            ← Anterior
-          </button>
-          <span class="pagination-info">
-            {{ equiposFiltradosOrdenados().length }} equipos - Página {{ currentPage() }} de {{ totalPages() }}
-          </span>
-          <button
-            class="btn btn-sm btn-secondary"
-            [disabled]="currentPage() === totalPages()"
-            (click)="nextPage()">
-            Siguiente →
-          </button>
-        </div>
-      }
-    </div>
-
-    <!-- Vista de tarjetas para mobile -->
-    <div class="cards-container mobile-only">
-      @for (equipo of equipos(); track equipo.id) {
-        <div class="card">
-          <div class="card-header">
-            <span class="card-nombre">{{ equipo.nombre }}</span>
-            <span class="card-estado" [class]="equipo.estado?.toLowerCase()">{{ equipo.estado }}</span>
-          </div>
-          <div class="card-body" [routerLink]="['/equipos', equipo.id]">
-            @if (equipo.piso) {
-              <p class="card-piso">🏢 Piso: {{ equipo.piso }}</p>
+          </thead>
+          <tbody>
+            @for (equipo of equiposPaginados(); track equipo.id) {
+              <tr>
+                <td>{{ equipo.nombre }}</td>
+                <td>{{ equipo.piso || '-' }}</td>
+                <td>{{ equipo.descripcion || '-' }}</td>
+                <td>{{ equipo.marca }}</td>
+                <td>{{ equipo.modelo }}</td>
+                <td>{{ equipo.estado }}</td>
+                <td>{{ equipo.ambientecodigo || 'Sin asignar' }}</td>
+                <td class="actions">
+                  <a [routerLink]="['/equipos', equipo.id]" class="btn btn-sm btn-edit">
+                    Editar
+                  </a>
+                  <button (click)="deleteEquipo(equipo.id!)" class="btn btn-sm btn-delete">
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="empty">No hay equipos en esta categoría</td>
+              </tr>
             }
-            @if (equipo.descripcion) {
-              <p class="card-descripcion">{{ equipo.descripcion }}</p>
-            }
-            <p class="card-marca">{{ equipo.marca }} - {{ equipo.modelo }}</p>
-            <p class="card-ambiente" *ngIf="equipo.ambientecodigo">
-              📍 {{ equipo.ambientecodigo }}
-            </p>
-          </div>
-          <div class="card-actions">
-            <a [routerLink]="['/equipos', equipo.id]" class="btn btn-sm btn-edit">
-              Editar
-            </a>
-            <button (click)="deleteEquipo(equipo.id!)" class="btn btn-sm btn-delete">
-              Eliminar
+          </tbody>
+        </table>
+
+        <!-- Controles de paginación (ESCRITORIO) -->
+        @if (totalPages() > 1) {
+          <div class="pagination">
+            <button
+              class="btn btn-sm btn-secondary"
+              [disabled]="currentPage() === 1"
+              (click)="prevPage()">
+              ← Anterior
+            </button>
+            <span class="pagination-info">
+              {{ equiposFiltradosOrdenados().length }} equipos - Página {{ currentPage() }} de {{ totalPages() }}
+            </span>
+            <button
+              class="btn btn-sm btn-secondary"
+              [disabled]="currentPage() === totalPages()"
+              (click)="nextPage()">
+              Siguiente →
             </button>
           </div>
-        </div>
-      } @empty {
-        <div class="empty-card">No hay equipos registrados</div>
-      }
-    </div>
+        }
+      </div>
+
+      <!-- Vista de tarjetas para mobile -->
+      <div class="cards-container mobile-only">
+        @for (equipo of equiposFiltradosOrdenados(); track equipo.id) {
+          <div class="card">
+            <div class="card-header">
+              <span class="card-nombre">{{ equipo.nombre }}</span>
+              <span class="card-estado" [class]="equipo.estado?.toLowerCase()">{{ equipo.estado }}</span>
+            </div>
+            <div class="card-body" [routerLink]="['/equipos', equipo.id]">
+              @if (equipo.piso) {
+                <p class="card-piso">🏢 Piso: {{ equipo.piso }}</p>
+              }
+              @if (equipo.descripcion) {
+                <p class="card-descripcion">{{ equipo.descripcion }}</p>
+              }
+              <p class="card-marca">{{ equipo.marca }} - {{ equipo.modelo }}</p>
+              <p class="card-ambiente" *ngIf="equipo.ambientecodigo">
+                📍 {{ equipo.ambientecodigo }}
+              </p>
+            </div>
+            <div class="card-actions">
+              <a [routerLink]="['/equipos', equipo.id]" class="btn btn-sm btn-edit">
+                Editar
+              </a>
+              <button (click)="deleteEquipo(equipo.id!)" class="btn btn-sm btn-delete">
+                Eliminar
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-card">No hay equipos en esta categoría</div>
+        }
+      </div>
+    }
   }
 </div>

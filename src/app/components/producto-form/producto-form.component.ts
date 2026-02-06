@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { EquipoService } from '../../services/equipo.service';
 import { AmbienteService } from '../../services/ambiente.service';
 import { EquipoForm, Ambiente, CATEGORIAS_EQUIPO } from '../../models/equipo.model';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-producto-form',
@@ -17,6 +18,7 @@ export class ProductoFormComponent implements OnInit {
   private readonly ambienteService = inject(AmbienteService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly toastService = inject(ToastService);
 
   readonly isEditing = signal(false);
   readonly loading = signal(false);
@@ -38,14 +40,21 @@ export class ProductoFormComponent implements OnInit {
   };
 
   private equipoId: number | null = null;
+  private fromCategoria: string | null = null;
 
   ngOnInit(): void {
     this.loadAmbientes();
+
+    // Get categoria from query params
+    this.fromCategoria = this.route.snapshot.queryParamMap.get('categoria');
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditing.set(true);
       this.equipoId = +id;
       this.loadEquipo(this.equipoId);
+    } else if (this.fromCategoria) {
+      this.form.categoria = this.fromCategoria;
     }
   }
 
@@ -145,6 +154,12 @@ export class ProductoFormComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/equipos']);
+    this.toastService.success('Se canceló exitosamente');
+
+    if (this.fromCategoria) {
+      this.router.navigate(['/equipos'], { queryParams: { categoria: this.fromCategoria } });
+    } else {
+      this.router.navigate(['/equipos']);
+    }
   }
 }

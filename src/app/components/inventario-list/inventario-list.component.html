@@ -8,14 +8,14 @@
     </div>
     <div class="header-actions">
       @if (selectedCategoria()) {
-        <button class="btn btn-secondary" (click)="clearCategoria()">
+        <button class="btn btn-secondary" (click)="clearCategoria(); router.navigate(['/equipos']);">
           ← Ver todas las categorías
         </button>
       }
       <button class="btn btn-filter" (click)="toggleFilters()">
         🔍 Filtros
       </button>
-      <a routerLink="/equipos/nuevo" class="btn btn-primary" [class.disabled]="!selectedCategoria()">
+      <a [routerLink]="['/equipos', 'nuevo']" [queryParams]="{ categoria: selectedCategoria() }" class="btn btn-primary" [class.disabled]="!selectedCategoria()">
         + Agregar
       </a>
     </div>

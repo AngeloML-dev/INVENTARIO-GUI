@@ -1,6 +1,6 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { EquipoService } from '../../services/equipo.service';
 import { Equipo, CATEGORIAS_EQUIPO } from '../../models/equipo.model';
@@ -13,6 +13,8 @@ import { Equipo, CATEGORIAS_EQUIPO } from '../../models/equipo.model';
 })
 export class InventarioListComponent implements OnInit {
   private readonly equipoService = inject(EquipoService);
+  private readonly route = inject(ActivatedRoute);
+  readonly router = inject(Router);
 
   readonly equipos = signal<Equipo[]>([]);
   readonly loading = signal(true);
@@ -134,6 +136,12 @@ export class InventarioListComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    // Read categoria from query params
+    const categoriaParam = this.route.snapshot.queryParamMap.get('categoria');
+    if (categoriaParam) {
+      this.selectedCategoria.set(categoriaParam);
+    }
+
     this.loadEquipos();
   }
 

@@ -115,17 +115,14 @@
         <table class="table">
           <thead>
             <tr>
+              <th class="sortable" (click)="setSortField('codigoid')">
+                ID {{ getSortIcon('codigoid') }}
+              </th>
               <th class="sortable" (click)="setSortField('nombre')">
                 Nombre {{ getSortIcon('nombre') }}
               </th>
               <th>Piso</th>
               <th>Descripción</th>
-              <th class="sortable" (click)="setSortField('marca')">
-                Marca {{ getSortIcon('marca') }}
-              </th>
-              <th class="sortable" (click)="setSortField('modelo')">
-                Modelo {{ getSortIcon('modelo') }}
-              </th>
               <th>Estado</th>
               <th class="sortable" (click)="setSortField('ambientecodigo')">
                 Ambiente {{ getSortIcon('ambientecodigo') }}
@@ -136,25 +133,24 @@
           <tbody>
             @for (equipo of equiposPaginados(); track equipo.id) {
               <tr>
+                <td><strong>{{ equipo.codigoid }}</strong></td>
                 <td>{{ equipo.nombre }}</td>
                 <td>{{ equipo.piso || '-' }}</td>
                 <td>{{ equipo.descripcion || '-' }}</td>
-                <td>{{ equipo.marca }}</td>
-                <td>{{ equipo.modelo }}</td>
                 <td>{{ equipo.estado }}</td>
                 <td>{{ equipo.ambientecodigo || 'Sin asignar' }}</td>
                 <td class="actions">
                   <a [routerLink]="['/equipos', equipo.id]" class="btn btn-sm btn-edit">
                     Editar
                   </a>
-                  <button (click)="deleteEquipo(equipo.id!)" class="btn btn-sm btn-delete">
+                  <button (click)="deleteEquipo(equipo.id!, equipo.nombre)" class="btn btn-sm btn-delete">
                     Eliminar
                   </button>
                 </td>
               </tr>
             } @empty {
               <tr>
-                <td colspan="8" class="empty">No hay equipos en esta categoría</td>
+                <td colspan="7" class="empty">No hay equipos en esta categoría</td>
               </tr>
             }
           </tbody>
@@ -191,13 +187,15 @@
               <span class="card-estado" [class]="equipo.estado?.toLowerCase()">{{ equipo.estado }}</span>
             </div>
             <div class="card-body" [routerLink]="['/equipos', equipo.id]">
+              @if (equipo.codigoid) {
+                <p class="card-id">🏷️ ID: {{ equipo.codigoid }}</p>
+              }
               @if (equipo.piso) {
                 <p class="card-piso">🏢 Piso: {{ equipo.piso }}</p>
               }
               @if (equipo.descripcion) {
                 <p class="card-descripcion">{{ equipo.descripcion }}</p>
               }
-              <p class="card-marca">{{ equipo.marca }} - {{ equipo.modelo }}</p>
               <p class="card-ambiente" *ngIf="equipo.ambientecodigo">
                 📍 {{ equipo.ambientecodigo }}
               </p>
@@ -206,7 +204,7 @@
               <a [routerLink]="['/equipos', equipo.id]" class="btn btn-sm btn-edit">
                 Editar
               </a>
-              <button (click)="deleteEquipo(equipo.id!)" class="btn btn-sm btn-delete">
+              <button (click)="deleteEquipo(equipo.id!, equipo.nombre)" class="btn btn-sm btn-delete">
                 Eliminar
               </button>
             </div>

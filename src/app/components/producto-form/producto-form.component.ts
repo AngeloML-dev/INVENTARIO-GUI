@@ -28,6 +28,7 @@ export class ProductoFormComponent implements OnInit {
   readonly categorias = CATEGORIAS_EQUIPO;
 
   form: EquipoForm = {
+    codigoid: '',
     nombre: '',
     descripcion: '',
     piso: '',
@@ -41,6 +42,7 @@ export class ProductoFormComponent implements OnInit {
 
   private equipoId: number | null = null;
   private fromCategoria: string | null = null;
+  private equipoCategoria: string | null = null;
 
   ngOnInit(): void {
     this.loadAmbientes();
@@ -74,6 +76,7 @@ export class ProductoFormComponent implements OnInit {
     this.equipoService.getById(id).subscribe({
       next: (equipo) => {
         this.form = {
+          codigoid: equipo.codigoid,
           nombre: equipo.nombre,
           descripcion: equipo.descripcion || '',
           piso: equipo.piso || '',
@@ -84,6 +87,8 @@ export class ProductoFormComponent implements OnInit {
           ambientecodigo: equipo.ambientecodigo || '',
           ambientenombre: equipo.ambientenombre || ''
         };
+        // Guardar la categoría del equipo para navegación
+        this.equipoCategoria = equipo.categoria || null;
         this.loading.set(false);
       },
       error: (err) => {
@@ -92,6 +97,24 @@ export class ProductoFormComponent implements OnInit {
         console.error(err);
       }
     });
+  }
+
+  private getCategoria(): string | null {
+    // Si estamos editando, usar la categoría del equipo
+    if (this.equipoCategoria) {
+      return this.equipoCategoria;
+    }
+    // Si estamos creando, usar la categoría de los query params
+    return this.fromCategoria;
+  }
+
+  private navigateToList(): void {
+    const categoria = this.getCategoria();
+    if (categoria) {
+      this.router.navigate(['/equipos'], { queryParams: { categoria } });
+    } else {
+      this.router.navigate(['/equipos']);
+    }
   }
 
   onAmbienteChange(event: Event): void {
@@ -125,7 +148,8 @@ export class ProductoFormComponent implements OnInit {
 
     this.equipoService.create(this.form).subscribe({
       next: () => {
-        this.router.navigate(['/equipos']);
+        this.toastService.success('Equipo creado exitosamente');
+        this.navigateToList();
       },
       error: (err) => {
         this.error.set('Error al crear equipo');
@@ -143,7 +167,8 @@ export class ProductoFormComponent implements OnInit {
 
     this.equipoService.update(this.equipoId, this.form).subscribe({
       next: () => {
-        this.router.navigate(['/equipos']);
+        this.toastService.success('Equipo actualizado exitosamente');
+        this.navigateToList();
       },
       error: (err) => {
         this.error.set('Error al actualizar equipo');
@@ -155,11 +180,6 @@ export class ProductoFormComponent implements OnInit {
 
   cancel(): void {
     this.toastService.success('Se canceló exitosamente');
-
-    if (this.fromCategoria) {
-      this.router.navigate(['/equipos'], { queryParams: { categoria: this.fromCategoria } });
-    } else {
-      this.router.navigate(['/equipos']);
-    }
+    this.navigateToList();
   }
 }

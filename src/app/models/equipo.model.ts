@@ -7,6 +7,7 @@ export interface Ambiente {
 
 export interface Equipo {
   id?: number;
+  codigoid: string;  // ID personalizado del equipo (DNI único)
   nombre: string;
   descripcion?: string;
   piso?: string;
@@ -21,11 +22,9 @@ export interface Equipo {
 // Categorías de equipos
 export const CATEGORIAS_EQUIPO = [
   'Micrófonos',
-  'Computadoras',
-  'Monitores',
   'Parlantes',
-  'Proyectores',
-  'Controles'
+  'Teclados',
+  'Mouse'
 ];
 
 export type EquipoForm = Omit<Equipo, 'id'>;

@@ -4,6 +4,8 @@ import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { EquipoService } from '../../services/equipo.service';
 import { Equipo, CATEGORIAS_EQUIPO } from '../../models/equipo.model';
+import { ConfirmDialogService } from '../../services/confirm-dialog.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-inventario-list',
@@ -15,6 +17,8 @@ export class InventarioListComponent implements OnInit {
   private readonly equipoService = inject(EquipoService);
   private readonly route = inject(ActivatedRoute);
   readonly router = inject(Router);
+  private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly toastService = inject(ToastService);
 
   readonly equipos = signal<Equipo[]>([]);
   readonly loading = signal(true);
@@ -34,7 +38,7 @@ export class InventarioListComponent implements OnInit {
   readonly filterSearch = signal('');
 
   // Ordenamiento
-  readonly sortField = signal<'nombre' | 'marca' | 'modelo' | 'ambientecodigo'>('ambientecodigo');
+  readonly sortField = signal<'codigoid' | 'nombre' | 'marca' | 'modelo' | 'ambientecodigo'>('codigoid');
   readonly sortOrder = signal<'asc' | 'desc'>('asc');
 
   // Paginación
@@ -185,7 +189,7 @@ export class InventarioListComponent implements OnInit {
     this.currentPage.set(1);
   }
 
-  setSortField(field: 'nombre' | 'marca' | 'modelo' | 'ambientecodigo'): void {
+  setSortField(field: 'codigoid' | 'nombre' | 'marca' | 'modelo' | 'ambientecodigo'): void {
     if (this.sortField() === field) {
       this.sortOrder.set(this.sortOrder() === 'asc' ? 'desc' : 'asc');
     } else {
@@ -202,11 +206,9 @@ export class InventarioListComponent implements OnInit {
   getCategoriaIcon(categoria: string): string {
     const iconos: Record<string, string> = {
       'Micrófonos': '🎤',
-      'Computadoras': '💻',
-      'Monitores': '🖥️',
       'Parlantes': '🔊',
-      'Proyectores': 'icon-proyector.png',
-      'Controles': 'icon-control.png'
+      'Teclados': '⌨️',
+      'Mouse': '🖱️'
     };
     return iconos[categoria] || '📦';
   }
@@ -223,17 +225,23 @@ export class InventarioListComponent implements OnInit {
     }
   }
 
-  deleteEquipo(id: number): void {
-    if (confirm('¿Estás seguro de eliminar este equipo?')) {
-      this.equipoService.delete(id).subscribe({
-        next: () => {
-          this.loadEquipos();
-        },
-        error: (err) => {
-          this.error.set('Error al eliminar equipo');
-          console.error(err);
-        }
-      });
-    }
+  deleteEquipo(id: number, nombre: string): void {
+    this.confirmDialog.open(
+      'Eliminar equipo',
+      `¿Estás seguro de que deseas eliminar "${nombre}"?`
+    ).then((confirmed: boolean) => {
+      if (confirmed) {
+        this.equipoService.delete(id).subscribe({
+          next: () => {
+            this.toastService.success('Equipo eliminado exitosamente');
+            this.loadEquipos();
+          },
+          error: (err) => {
+            this.toastService.error('Error al eliminar equipo');
+            console.error(err);
+          }
+        });
+      }
+    });
   }
 }

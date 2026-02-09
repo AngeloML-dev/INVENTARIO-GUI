@@ -1,3 +1,17 @@
 <app-toast></app-toast>
 <app-confirm-dialog></app-confirm-dialog>
+<app-auth-modal></app-auth-modal>
+
+@if (authService.isAuthenticated()) {
+  <div class="header-bar">
+    <div class="header-content">
+      <div class="logo" routerLink="/">🏢 ADEX Inventario</div>
+      <div class="user-section">
+        <span class="user-email">{{ authService.user()?.email }}</span>
+        <button class="btn btn-logout" (click)="logout()">Cerrar Sesión</button>
+      </div>
+    </div>
+  </div>
+}
+
 <router-outlet></router-outlet>

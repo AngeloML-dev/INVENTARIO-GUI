@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1770666687299,
+  "timestamp": 1770680231911,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -12,7 +12,7 @@
       },
       "urls": [
         "/index.html",
-        "/main-OCZEMBJP.js",
+        "/main-GM5QOALS.js",
         "/styles-4IOUCNVL.css"
       ],
       "patterns": []
@@ -30,8 +30,8 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/index.html": "30f491dce625d662a5fc9dc14afe93c11e9bc2cc",
-    "/main-OCZEMBJP.js": "571f4441ef594c0ea4c18082a6ae126ea6becbc4",
+    "/index.html": "8e5c1d2ca2a5ad0a536c772f46e8ef599e1a5d10",
+    "/main-GM5QOALS.js": "110a1213bca23a1a533656f0eeeb74bb7d424f94",
     "/styles-4IOUCNVL.css": "97ec659c5a92045c4ab7e7d069d261d07936f955"
   },
   "navigationUrls": [

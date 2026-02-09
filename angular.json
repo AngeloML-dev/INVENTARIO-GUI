@@ -17,12 +17,13 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
+            "outputPath": "public",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
                 "glob": "**/*",
                 "input": "public",
-                "output": "/"
+                "output": "."
               }
             ],
             "styles": [

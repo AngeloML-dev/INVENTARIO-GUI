@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1770654429786,
+  "timestamp": 1770656724617,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -60,7 +60,7 @@
     "/icons/icon-control.png": "437c10a3adf82d3474130d17bb66efe6211ef557",
     "/icons/icon-proyector.png": "018986d4da706d6b036529ed3e8b588aa827b34e",
     "/icons/logo-adex.png": "f20609d118646731cb62a00e0c50b922174881d6",
-    "/index.html": "f2919fe3f1bb2b02c400458ee4cff54041cc909b",
+    "/index.html": "2d0197cd13c0c6c7a2643bd15b91e76f253ce29b",
     "/main-2YGNU2IZ.js": "175491634292670ec17d66232fa09cf424cc270c",
     "/main-ZTYLXFFL.js": "37527040b7f5babbc83ab9a736e2d96da1a4d744",
     "/manifest.webmanifest": "5ada32b4e19212415a0c8fee9fe04b40d1ab4c85",

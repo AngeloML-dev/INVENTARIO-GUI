@@ -34,12 +34,15 @@ export class AuthService {
     return { error: error?.message ?? null };
   }
 
-  async signUp(email: string, password: string): Promise<{ error: string | null; needsConfirmation: boolean }> {
+  async signUp(email: string, password: string, displayName?: string): Promise<{ error: string | null; needsConfirmation: boolean }> {
     const { error, data } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        data: {
+          display_name: displayName || email.split('@')[0]
+        }
       }
     });
 

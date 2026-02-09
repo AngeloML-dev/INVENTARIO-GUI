@@ -1,17 +1,12 @@
 <div class="container">
   <header class="header">
     <div class="header-title">
-      <a routerLink="/menu" class="btn-volver" title="Volver al menú">
+      <button class="btn-volver" (click)="goBack()" [title]="selectedCategoria() ? 'Volver a todas las categorías' : 'Volver al menú'">
         ←
-      </a>
+      </button>
       <h1>{{ selectedCategoria() ? selectedCategoria() : 'Equipos' }}</h1>
     </div>
     <div class="header-actions">
-      @if (selectedCategoria()) {
-        <button class="btn btn-secondary" (click)="clearCategoria(); router.navigate(['/equipos']);">
-          ← Ver todas las categorías
-        </button>
-      }
       <button class="btn btn-filter" (click)="toggleFilters()">
         🔍 Filtros
       </button>

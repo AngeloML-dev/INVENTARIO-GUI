@@ -5,9 +5,9 @@
 @if (authService.isAuthenticated()) {
   <div class="header-bar">
     <div class="header-content">
-      <div class="logo" routerLink="/">🏢 ADEX Inventario</div>
+      <div class="logo" routerLink="/">🏢 ADEX</div>
+      <span class="user-name">{{ getUserName() }}</span>
       <div class="user-section">
-        <span class="user-email">{{ authService.user()?.email }}</span>
         <button class="btn btn-logout" (click)="logout()">Cerrar Sesión</button>
       </div>
     </div>

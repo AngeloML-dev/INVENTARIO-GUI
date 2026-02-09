@@ -177,6 +177,17 @@ export class InventarioListComponent implements OnInit {
     this.currentPage.set(1);
   }
 
+  goBack(): void {
+    if (this.selectedCategoria()) {
+      // Si hay categoría seleccionada, limpiarla y volver a equipos
+      this.clearCategoria();
+      this.router.navigate(['/equipos']);
+    } else {
+      // Si no hay categoría, volver al menú
+      this.router.navigate(['/menu']);
+    }
+  }
+
   toggleFilters(): void {
     this.showFilters.update(v => !v);
   }

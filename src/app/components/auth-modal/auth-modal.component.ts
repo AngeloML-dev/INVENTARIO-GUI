@@ -404,7 +404,7 @@ export class AuthModalComponent {
         this.setMode('login');
       }
     } else {
-      const { error, needsConfirmation } = await this.authService.signUp(this.email, this.password);
+      const { error, needsConfirmation } = await this.authService.signUp(this.email, this.password, this.nombre);
       this.loading.set(false);
 
       if (error) {

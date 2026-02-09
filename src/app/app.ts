@@ -22,6 +22,28 @@ export class App {
   protected readonly authService = inject(AuthService);
   private readonly toastService = inject(ToastService);
 
+  getUserName(): string {
+    const user = this.authService.user();
+    if (!user) return '';
+    
+    // Intentar obtener el display_name de los metadatos
+    const displayName = user.user_metadata?.['display_name'];
+    
+    if (displayName) {
+      // Si tiene espacios, tomar solo la primera palabra
+      const firstName = displayName.split(' ')[0];
+      return firstName.toUpperCase();
+    }
+    
+    // Fallback: extraer del email
+    const email = user.email;
+    if (!email) return '';
+    
+    const username = email.split('@')[0];
+    const firstName = username.split(/[._-]/)[0];
+    return firstName.toUpperCase();
+  }
+
   logout(): void {
     this.authService.signOut();
     this.toastService.success('Sesión cerrada');

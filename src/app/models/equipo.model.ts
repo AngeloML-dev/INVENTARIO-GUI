@@ -7,7 +7,7 @@ export interface Ambiente {
 
 export interface Equipo {
   id?: number;
-  codigoid: string;  // ID personalizado del equipo (DNI único)
+  codigoid?: string;  // ID personalizado del equipo (DNI único, opcional)
   nombre: string;
   descripcion?: string;
   piso?: string;

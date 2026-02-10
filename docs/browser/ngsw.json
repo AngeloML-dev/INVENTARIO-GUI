@@ -1,7 +1,7 @@
 {
   "configVersion": 1,
-  "timestamp": 1770684955922,
-  "index": "/index.html",
+  "timestamp": 1770733310488,
+  "index": "/INVENTARIO-GUI/index.html",
   "assetGroups": [
     {
       "name": "app",
@@ -11,9 +11,9 @@
         "ignoreVary": true
       },
       "urls": [
-        "/index.html",
-        "/main-GCSBBCGM.js",
-        "/styles-4IOUCNVL.css"
+        "/INVENTARIO-GUI/index.html",
+        "/INVENTARIO-GUI/main-GCSBBCGM.js",
+        "/INVENTARIO-GUI/styles-4IOUCNVL.css"
       ],
       "patterns": []
     },
@@ -30,9 +30,9 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/index.html": "f996570ab3d995fa6277dd4eb555b8b6c54a0676",
-    "/main-GCSBBCGM.js": "9a5ef28acd07c8f3867ba9c975f2063daaeee3b8",
-    "/styles-4IOUCNVL.css": "97ec659c5a92045c4ab7e7d069d261d07936f955"
+    "/INVENTARIO-GUI/index.html": "53d0b0567d369d9746029f52ed91e5caffa11266",
+    "/INVENTARIO-GUI/main-GCSBBCGM.js": "9a5ef28acd07c8f3867ba9c975f2063daaeee3b8",
+    "/INVENTARIO-GUI/styles-4IOUCNVL.css": "97ec659c5a92045c4ab7e7d069d261d07936f955"
   },
   "navigationUrls": [
     {

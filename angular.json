@@ -21,6 +21,9 @@
             "outputPath": "docs",
             "tsConfig": "tsconfig.app.json",
             "assets": [],
+            "index": "src/index.html",
+            "baseHref": "/INVENTARIO-GUI/",
+            "deployUrl": "/INVENTARIO-GUI/",
             "styles": [
               "src/styles.css"
             ]

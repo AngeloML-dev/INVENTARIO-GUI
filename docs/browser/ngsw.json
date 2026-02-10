@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1770733310488,
+  "timestamp": 1770742217200,
   "index": "/INVENTARIO-GUI/index.html",
   "assetGroups": [
     {
@@ -12,7 +12,7 @@
       },
       "urls": [
         "/INVENTARIO-GUI/index.html",
-        "/INVENTARIO-GUI/main-GCSBBCGM.js",
+        "/INVENTARIO-GUI/main-7CSX7KXN.js",
         "/INVENTARIO-GUI/styles-4IOUCNVL.css"
       ],
       "patterns": []
@@ -30,8 +30,8 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/INVENTARIO-GUI/index.html": "53d0b0567d369d9746029f52ed91e5caffa11266",
-    "/INVENTARIO-GUI/main-GCSBBCGM.js": "9a5ef28acd07c8f3867ba9c975f2063daaeee3b8",
+    "/INVENTARIO-GUI/index.html": "b1bdd0ee9c87dd1c76a61313616ef011b9c25522",
+    "/INVENTARIO-GUI/main-7CSX7KXN.js": "22d7596a9d702883e373748ca4316744cc9681dc",
     "/INVENTARIO-GUI/styles-4IOUCNVL.css": "97ec659c5a92045c4ab7e7d069d261d07936f955"
   },
   "navigationUrls": [

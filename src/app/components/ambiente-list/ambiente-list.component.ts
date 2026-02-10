@@ -1,12 +1,13 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { AmbienteService } from '../../services/ambiente.service';
 import { Ambiente } from '../../models/equipo.model';
 
 @Component({
   selector: 'app-ambiente-list',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   template: `
     <div class="container">
       <header class="header">
@@ -19,6 +20,18 @@ import { Ambiente } from '../../models/equipo.model';
         </a>
       </header>
 
+      <div class="search-bar">
+        <input
+          type="text"
+          [ngModel]="filterSearch()"
+          (ngModelChange)="filterSearch.set($event); currentPage.set(1)"
+          placeholder="Buscar por código, nombre o ubicación..."
+          class="search-input">
+        @if (filterSearch()) {
+          <button class="search-clear" (click)="filterSearch.set('')">×</button>
+        }
+      </div>
+
       @if (loading()) {
         <div class="loading">Cargando ambientes...</div>
       }
@@ -28,30 +41,31 @@ import { Ambiente } from '../../models/equipo.model';
       }
 
       @if (!loading() && !error()) {
-        <!-- Vista de tabla para desktop -->
         <div class="table-container desktop-only">
           <table class="table">
             <thead>
               <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Ubicación</th>
+                <th class="sortable" (click)="setSortField('codigo')">
+                  Código {{ getSortIcon('codigo') }}
+                </th>
+                <th class="sortable" (click)="setSortField('nombre')">
+                  Nombre {{ getSortIcon('nombre') }}
+                </th>
+                <th class="sortable" (click)="setSortField('ubicacion')">
+                  Ubicación {{ getSortIcon('ubicacion') }}
+                </th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
               @for (ambiente of ambientesPaginados(); track ambiente.id) {
                 <tr>
-                  <td>{{ ambiente.codigo }}</td>
+                  <td><strong>{{ ambiente.codigo }}</strong></td>
                   <td>{{ ambiente.nombre }}</td>
                   <td>{{ ambiente.ubicacion }}</td>
                   <td class="actions">
-                    <a [routerLink]="['/ambientes', ambiente.id]" class="btn btn-sm btn-edit">
-                      Editar
-                    </a>
-                    <button (click)="deleteAmbiente(ambiente.id!)" class="btn btn-sm btn-delete">
-                      Eliminar
-                    </button>
+                    <a [routerLink]="['/ambientes', ambiente.id]" class="btn btn-sm btn-edit">Editar</a>
+                    <button (click)="deleteAmbiente(ambiente.id!)" class="btn btn-sm btn-delete">Eliminar</button>
                   </td>
                 </tr>
               } @empty {
@@ -62,31 +76,19 @@ import { Ambiente } from '../../models/equipo.model';
             </tbody>
           </table>
 
-          <!-- Controles de paginación (ESCRITORIO) -->
           @if (totalPages() > 1) {
             <div class="pagination">
-              <button
-                class="btn btn-sm btn-secondary"
-                [disabled]="currentPage() === 1"
-                (click)="prevPage()">
-                ← Anterior
-              </button>
+              <button class="btn btn-sm btn-secondary" [disabled]="currentPage() === 1" (click)="prevPage()">← Anterior</button>
               <span class="pagination-info">
-                {{ ambientes().length }} ambientes - Página {{ currentPage() }} de {{ totalPages() }}
+                {{ ambientesFiltradosOrdenados().length }} ambientes - Página {{ currentPage() }} de {{ totalPages() }}
               </span>
-              <button
-                class="btn btn-sm btn-secondary"
-                [disabled]="currentPage() === totalPages()"
-                (click)="nextPage()">
-                Siguiente →
-              </button>
+              <button class="btn btn-sm btn-secondary" [disabled]="currentPage() === totalPages()" (click)="nextPage()">Siguiente →</button>
             </div>
           }
         </div>
 
-        <!-- Vista de tarjetas para mobile -->
         <div class="cards-container mobile-only">
-          @for (ambiente of ambientes(); track ambiente.id) {
+          @for (ambiente of ambientesPaginados(); track ambiente.id) {
             <div class="card">
               <div class="card-header">
                 <span class="card-codigo">{{ ambiente.codigo }}</span>
@@ -96,12 +98,8 @@ import { Ambiente } from '../../models/equipo.model';
                 <p class="card-ubicacion">📍 {{ ambiente.ubicacion }}</p>
               </div>
               <div class="card-actions">
-                <a [routerLink]="['/ambientes', ambiente.id]" class="btn btn-sm btn-edit">
-                  Editar
-                </a>
-                <button (click)="deleteAmbiente(ambiente.id!)" class="btn btn-sm btn-delete">
-                  Eliminar
-                </button>
+                <a [routerLink]="['/ambientes', ambiente.id]" class="btn btn-sm btn-edit">Editar</a>
+                <button (click)="deleteAmbiente(ambiente.id!)" class="btn btn-sm btn-delete">Eliminar</button>
               </div>
             </div>
           } @empty {
@@ -112,164 +110,40 @@ import { Ambiente } from '../../models/equipo.model';
     </div>
   `,
   styles: [`
-    .container {
-      padding: 2rem;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-    .header div {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
+    .container { padding: 2rem; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .header div { display: flex; align-items: center; gap: 1rem; }
     h1 { margin: 0; }
-
+    .search-bar { position: relative; margin-bottom: 1rem; }
+    .search-input { width: 100%; padding: 0.75rem 2.5rem 0.75rem 1rem; border: 1px solid #ddd; border-radius: 8px; font-size: 0.875rem; }
+    .search-input:focus { outline: none; border-color: #0055A4; box-shadow: 0 0 0 2px rgba(0, 85, 164, 0.2); }
+    .search-clear { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 1.25rem; color: #999; cursor: pointer; padding: 0.25rem; }
+    .search-clear:hover { color: #333; }
     .table-container { display: block; }
     .desktop-only { display: table; }
     .mobile-only { display: none; }
-
-    .cards-container {
-      display: none;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.75rem 1rem;
-      background: #0055A4;
-      color: white;
-    }
-
-    .card-codigo {
-      font-size: 0.875rem;
-      opacity: 0.9;
-    }
-
-    .card-body {
-      padding: 1rem;
-    }
-
-    .card-body h3 {
-      margin: 0 0 0.5rem;
-      font-size: 1.125rem;
-      color: #1a1a2e;
-    }
-
-    .card-ubicacion {
-      margin: 0;
-      color: #0055A4;
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
-
-    .card-actions {
-      display: flex;
-      gap: 0.5rem;
-      padding: 1rem;
-      border-top: 1px solid #eee;
-    }
-
-    .card-actions .btn {
-      flex: 1;
-    }
-
-    .empty-card {
-      text-align: center;
-      padding: 2rem;
-      color: #999;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Paginación */
-    .pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      margin-top: 1rem;
-    }
-
-    .pagination-info {
-      font-size: 0.875rem;
-      color: #666;
-      font-weight: 500;
-    }
-
-    .pagination .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .table th,
-    .table td {
-      padding: 1rem;
-      text-align: left;
-      border-bottom: 1px solid #eee;
-    }
-
-    .table th {
-      background: #0055A4;
-      color: white;
-    }
-
-    .table tr:hover {
-      background: #f5f5f5;
-    }
-
-    .actions {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .loading {
-      padding: 2rem;
-      text-align: center;
-      color: #666;
-    }
-
-    .error {
-      padding: 1rem;
-      background: #fee;
-      color: #c00;
-      border-radius: 4px;
-      margin-bottom: 1rem;
-    }
-
-    .empty {
-      text-align: center;
-      color: #999;
-      padding: 2rem;
-    }
-
+    .cards-container { display: none; flex-direction: column; gap: 1rem; }
+    .card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); overflow: hidden; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: #0055A4; color: white; }
+    .card-codigo { font-size: 0.875rem; opacity: 0.9; }
+    .card-body { padding: 1rem; }
+    .card-body h3 { margin: 0 0 0.5rem; font-size: 1.125rem; color: #1a1a2e; }
+    .card-ubicacion { margin: 0; color: #0055A4; font-size: 0.875rem; font-weight: 500; }
+    .card-actions { display: flex; gap: 0.5rem; padding: 1rem; border-top: 1px solid #eee; }
+    .card-actions .btn { flex: 1; }
+    .empty-card { text-align: center; padding: 2rem; color: #999; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+    .pagination { display: flex; justify-content: center; align-items: center; gap: 1rem; padding: 1rem; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); margin-top: 1rem; }
+    .pagination-info { font-size: 0.875rem; color: #666; font-weight: 500; }
+    .pagination .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    .table th, .table td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
+    .table th { background: #0055A4; color: white; cursor: pointer; }
+    .table th:hover { background: #004080; }
+    .table tr:hover { background: #f5f5f5; }
+    .actions { display: flex; gap: 0.5rem; }
+    .loading { padding: 2rem; text-align: center; color: #666; }
+    .error { padding: 1rem; background: #fee; color: #c00; border-radius: 4px; margin-bottom: 1rem; }
+    .empty { text-align: center; color: #999; padding: 2rem; }
     @media (max-width: 1000px) {
       .desktop-only { display: none !important; }
       .mobile-only { display: flex !important; }
@@ -281,65 +155,66 @@ import { Ambiente } from '../../models/equipo.model';
 })
 export class AmbienteListComponent implements OnInit {
   private readonly ambienteService = inject(AmbienteService);
-
   readonly ambientes = signal<Ambiente[]>([]);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
-
-  // Paginación
+  readonly filterSearch = signal('');
+  readonly sortField = signal<'codigo' | 'nombre' | 'ubicacion'>('codigo');
+  readonly sortOrder = signal<'asc' | 'desc'>('asc');
   readonly pageSize = 10;
   readonly currentPage = signal(1);
-  readonly totalPages = computed(() => Math.ceil(this.ambientes().length / this.pageSize));
+
+  readonly totalPages = computed(() => Math.ceil(this.ambientesFiltradosOrdenados().length / this.pageSize));
+
+  readonly ambientesFiltradosOrdenados = computed(() => {
+    let result = [...this.ambientes()];
+    const search = this.filterSearch().toLowerCase();
+    if (search) {
+      result = result.filter(a => a.codigo?.toLowerCase().includes(search) || a.nombre?.toLowerCase().includes(search) || a.ubicacion?.toLowerCase().includes(search));
+    }
+    const field = this.sortField();
+    const order = this.sortOrder();
+    result.sort((a, b) => {
+      const aVal = (a[field] || '') as string;
+      const bVal = (b[field] || '') as string;
+      const comparison = aVal.localeCompare(bVal, undefined, { numeric: true, sensitivity: 'base' });
+      return order === 'asc' ? comparison : -comparison;
+    });
+    return result;
+  });
+
   readonly ambientesPaginados = computed(() => {
     const start = (this.currentPage() - 1) * this.pageSize;
     const end = start + this.pageSize;
-    return this.ambientes().slice(start, end);
+    return this.ambientesFiltradosOrdenados().slice(start, end);
   });
 
-  ngOnInit(): void {
-    this.loadAmbientes();
-  }
+  ngOnInit(): void { this.loadAmbientes(); }
 
   loadAmbientes(): void {
     this.loading.set(true);
     this.error.set(null);
-
     this.ambienteService.getAll().subscribe({
-      next: (data) => {
-        this.ambientes.set(data);
-        this.currentPage.set(1); // Reset a primera página
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.error.set('Error al cargar ambientes');
-        this.loading.set(false);
-        console.error(err);
-      }
+      next: (data) => { this.ambientes.set(data); this.currentPage.set(1); this.loading.set(false); },
+      error: (err) => { this.error.set('Error al cargar ambientes'); this.loading.set(false); console.error(err); }
     });
   }
 
-  nextPage(): void {
-    if (this.currentPage() < this.totalPages()) {
-      this.currentPage.set(this.currentPage() + 1);
-    }
+  setSortField(field: 'codigo' | 'nombre' | 'ubicacion'): void {
+    if (this.sortField() === field) { this.sortOrder.set(this.sortOrder() === 'asc' ? 'desc' : 'asc'); }
+    else { this.sortField.set(field); this.sortOrder.set('asc'); }
   }
 
-  prevPage(): void {
-    if (this.currentPage() > 1) {
-      this.currentPage.set(this.currentPage() - 1);
-    }
-  }
+  getSortIcon(field: string): string { return this.sortField() !== field ? '↕' : this.sortOrder() === 'asc' ? '↑' : '↓'; }
+
+  nextPage(): void { if (this.currentPage() < this.totalPages()) { this.currentPage.set(this.currentPage() + 1); } }
+  prevPage(): void { if (this.currentPage() > 1) { this.currentPage.set(this.currentPage() - 1); } }
 
   deleteAmbiente(id: number): void {
     if (confirm('¿Estás seguro de eliminar este ambiente?')) {
       this.ambienteService.delete(id).subscribe({
-        next: () => {
-          this.loadAmbientes();
-        },
-        error: (err) => {
-          this.error.set('Error al eliminar ambiente');
-          console.error(err);
-        }
+        next: () => { this.loadAmbientes(); },
+        error: (err) => { this.error.set('Error al eliminar ambiente'); console.error(err); }
       });
     }
   }

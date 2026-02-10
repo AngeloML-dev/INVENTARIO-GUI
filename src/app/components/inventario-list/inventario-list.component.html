@@ -7,9 +7,6 @@
       <h1>{{ selectedCategoria() ? selectedCategoria() : 'Equipos' }}</h1>
     </div>
     <div class="header-actions">
-      <button class="btn btn-filter" (click)="toggleFilters()">
-        🔍 Filtros
-      </button>
       <a [routerLink]="['/equipos', 'nuevo']" [queryParams]="{ categoria: selectedCategoria() }" class="btn btn-primary" [class.disabled]="!selectedCategoria()">
         + Agregar
       </a>
@@ -33,57 +30,6 @@
     </div>
   }
 
-  <!-- Menú Flotante de Filtros -->
-  @if (showFilters() && selectedCategoria()) {
-    <div class="filter-panel">
-      <div class="filter-header">
-        <h3>Filtros</h3>
-        <button class="btn btn-sm btn-secondary" (click)="clearFilters()">
-          Limpiar
-        </button>
-      </div>
-      <div class="filter-content">
-        <div class="filter-group">
-          <label for="filter-search">Buscar</label>
-          <input
-            type="text"
-            id="filter-search"
-            [(ngModel)]="filterSearch"
-            placeholder="Nombre, marca, modelo..."
-            class="form-control"
-          />
-        </div>
-        <div class="filter-group">
-          <label for="filter-piso">Piso</label>
-          <select id="filter-piso" [(ngModel)]="filterPiso" class="form-control">
-            <option value="">Todos los pisos</option>
-            @for (piso of pisos; track piso) {
-              <option [value]="piso">{{ piso }}</option>
-            }
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="filter-estado">Estado</label>
-          <select id="filter-estado" [(ngModel)]="filterEstado" class="form-control">
-            <option value="">Todos los estados</option>
-            @for (estado of estados; track estado) {
-              <option [value]="estado">{{ estado }}</option>
-            }
-          </select>
-        </div>
-        <div class="filter-group">
-          <label for="filter-ambiente">Ambiente</label>
-          <select id="filter-ambiente" [(ngModel)]="filterAmbiente" class="form-control">
-            <option value="">Todos los ambientes</option>
-            @for (amb of ambientes(); track amb) {
-              <option [value]="amb">{{ amb }}</option>
-            }
-          </select>
-        </div>
-      </div>
-    </div>
-  }
-
   @if (loading()) {
     <div class="loading">Cargando equipos...</div>
   }
@@ -93,17 +39,6 @@
   }
 
   @if (!loading() && !error()) {
-    <!-- Resumen de filtros activos -->
-    @if ((filterPiso() || filterEstado() || filterAmbiente() || filterSearch()) && selectedCategoria()) {
-      <div class="filter-summary">
-        <span>Filtros activos:</span>
-        @if (filterPiso()) { <span class="filter-tag">Piso: {{ filterPiso() }}</span> }
-        @if (filterEstado()) { <span class="filter-tag">Estado: {{ filterEstado() }}</span> }
-        @if (filterAmbiente()) { <span class="filter-tag">Ambiente: {{ filterAmbiente() }}</span> }
-        @if (filterSearch()) { <span class="filter-tag">Busqueda: {{ filterSearch() }}</span> }
-      </div>
-    }
-
     <!-- Vista de tabla para desktop (solo si hay categoría seleccionada) -->
     @if (selectedCategoria()) {
       <div class="table-container desktop-only">

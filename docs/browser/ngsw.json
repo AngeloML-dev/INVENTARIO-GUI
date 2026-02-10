@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1770684233812,
+  "timestamp": 1770684552359,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -12,7 +12,7 @@
       },
       "urls": [
         "/index.html",
-        "/main-HJNPD6PT.js",
+        "/main-GCSBBCGM.js",
         "/styles-4IOUCNVL.css"
       ],
       "patterns": []
@@ -30,8 +30,8 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/index.html": "38dc69bd2aa2d736a9b83aa3f2cf7acdf3a69135",
-    "/main-HJNPD6PT.js": "88904a976dfd988a60e412ca0917af74b8e3e422",
+    "/index.html": "f996570ab3d995fa6277dd4eb555b8b6c54a0676",
+    "/main-GCSBBCGM.js": "9a5ef28acd07c8f3867ba9c975f2063daaeee3b8",
     "/styles-4IOUCNVL.css": "97ec659c5a92045c4ab7e7d069d261d07936f955"
   },
   "navigationUrls": [

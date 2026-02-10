@@ -126,6 +126,13 @@
 }
 
 /* Botón de filtros */
+.filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
 .btn-filter {
   background: #0055A4;
   color: white;
@@ -140,6 +147,14 @@
 
 .btn-filter:hover {
   background: #004080;
+}
+
+.filter-badge {
+  font-size: 0.75rem;
+  color: #0055A4;
+  background: #e8f4ff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
 }
 
 /* Menú flotante de filtros */
@@ -412,82 +427,5 @@
 
   .categoria-count {
     font-size: 0.75rem;
-  }
-}
-
-/* Filtros bar */
-.filters-bar {
-  background: white;
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.search-box {
-  position: relative;
-  margin-bottom: 0.75rem;
-}
-
-.search-input {
-  width: 100%;
-  padding: 0.75rem 2.5rem 0.75rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #0055A4;
-  box-shadow: 0 0 0 2px rgba(0, 85, 164, 0.2);
-}
-
-.search-clear {
-  position: absolute;
-  right: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  font-size: 1.25rem;
-  color: #999;
-  cursor: pointer;
-  padding: 0.25rem;
-}
-
-.search-clear:hover {
-  color: #333;
-}
-
-.filters-panel {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid #eee;
-  margin-top: 0.75rem;
-}
-
-.filter-select {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  background: white;
-  cursor: pointer;
-  width: 100%;
-}
-
-.filter-select:focus {
-  outline: none;
-  border-color: #0055A4;
-}
-
-/* Responsive filtros */
-@media (max-width: 600px) {
-  .filters-panel {
-    grid-template-columns: 1fr;
   }
 }

@@ -1,13 +1,12 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { AmbienteService } from '../../services/ambiente.service';
 import { Ambiente } from '../../models/equipo.model';
 
 @Component({
   selector: 'app-ambiente-list',
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink],
   template: `
     <div class="container">
       <header class="header">
@@ -19,18 +18,6 @@ import { Ambiente } from '../../models/equipo.model';
           + Agregar
         </a>
       </header>
-
-      <div class="search-bar">
-        <input
-          type="text"
-          [ngModel]="filterSearch()"
-          (ngModelChange)="filterSearch.set($event); currentPage.set(1)"
-          placeholder="Buscar por código, nombre o ubicación..."
-          class="search-input">
-        @if (filterSearch()) {
-          <button class="search-clear" (click)="filterSearch.set('')">×</button>
-        }
-      </div>
 
       @if (loading()) {
         <div class="loading">Cargando ambientes...</div>
@@ -80,7 +67,7 @@ import { Ambiente } from '../../models/equipo.model';
             <div class="pagination">
               <button class="btn btn-sm btn-secondary" [disabled]="currentPage() === 1" (click)="prevPage()">← Anterior</button>
               <span class="pagination-info">
-                {{ ambientesFiltradosOrdenados().length }} ambientes - Página {{ currentPage() }} de {{ totalPages() }}
+                {{ ambientes().length }} ambientes - Página {{ currentPage() }} de {{ totalPages() }}
               </span>
               <button class="btn btn-sm btn-secondary" [disabled]="currentPage() === totalPages()" (click)="nextPage()">Siguiente →</button>
             </div>
@@ -88,7 +75,7 @@ import { Ambiente } from '../../models/equipo.model';
         </div>
 
         <div class="cards-container mobile-only">
-          @for (ambiente of ambientesPaginados(); track ambiente.id) {
+          @for (ambiente of ambientes(); track ambiente.id) {
             <div class="card">
               <div class="card-header">
                 <span class="card-codigo">{{ ambiente.codigo }}</span>
@@ -111,14 +98,9 @@ import { Ambiente } from '../../models/equipo.model';
   `,
   styles: [`
     .container { padding: 2rem; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
     .header div { display: flex; align-items: center; gap: 1rem; }
     h1 { margin: 0; }
-    .search-bar { position: relative; margin-bottom: 1rem; }
-    .search-input { width: 100%; padding: 0.75rem 2.5rem 0.75rem 1rem; border: 1px solid #ddd; border-radius: 8px; font-size: 0.875rem; }
-    .search-input:focus { outline: none; border-color: #0055A4; box-shadow: 0 0 0 2px rgba(0, 85, 164, 0.2); }
-    .search-clear { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 1.25rem; color: #999; cursor: pointer; padding: 0.25rem; }
-    .search-clear:hover { color: #333; }
     .table-container { display: block; }
     .desktop-only { display: table; }
     .mobile-only { display: none; }
@@ -158,20 +140,15 @@ export class AmbienteListComponent implements OnInit {
   readonly ambientes = signal<Ambiente[]>([]);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
-  readonly filterSearch = signal('');
   readonly sortField = signal<'codigo' | 'nombre' | 'ubicacion'>('codigo');
   readonly sortOrder = signal<'asc' | 'desc'>('asc');
   readonly pageSize = 10;
   readonly currentPage = signal(1);
 
-  readonly totalPages = computed(() => Math.ceil(this.ambientesFiltradosOrdenados().length / this.pageSize));
+  readonly totalPages = computed(() => Math.ceil(this.ambientesOrdenados().length / this.pageSize));
 
-  readonly ambientesFiltradosOrdenados = computed(() => {
+  readonly ambientesOrdenados = computed(() => {
     let result = [...this.ambientes()];
-    const search = this.filterSearch().toLowerCase();
-    if (search) {
-      result = result.filter(a => a.codigo?.toLowerCase().includes(search) || a.nombre?.toLowerCase().includes(search) || a.ubicacion?.toLowerCase().includes(search));
-    }
     const field = this.sortField();
     const order = this.sortOrder();
     result.sort((a, b) => {
@@ -186,7 +163,7 @@ export class AmbienteListComponent implements OnInit {
   readonly ambientesPaginados = computed(() => {
     const start = (this.currentPage() - 1) * this.pageSize;
     const end = start + this.pageSize;
-    return this.ambientesFiltradosOrdenados().slice(start, end);
+    return this.ambientesOrdenados().slice(start, end);
   });
 
   ngOnInit(): void { this.loadAmbientes(); }

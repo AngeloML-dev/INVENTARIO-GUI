@@ -39,58 +39,54 @@
   }
 
   @if (!loading() && !error()) {
-    <!-- Barra de búsqueda y filtros -->
-    <div class="filters-bar">
-      <div class="search-box">
-        <input
-          type="text"
-          [(ngModel)]="filterSearch"
-          (ngModelChange)="currentPage.set(1)"
-          placeholder="Buscar por nombre, marca o modelo..."
-          class="search-input">
-        @if (filterSearch()) {
-          <button class="search-clear" (click)="filterSearch.set('')">×</button>
+    <!-- Vista de equipos (solo si hay categoría seleccionada) -->
+    @if (selectedCategoria()) {
+      <!-- Botón de filtros -->
+      <div class="filter-actions">
+        <button class="btn-filter" (click)="toggleFilters()">
+          {{ showFilters() ? 'Ocultar filtros' : 'Filtrar' }}
+        </button>
+        @if (hasActiveFilters()) {
+          <span class="filter-badge">{{ getActiveFiltersCount() }} filtro(s) activo(s)</span>
         }
       </div>
-      <button class="btn btn-secondary" (click)="toggleFilters()">
-        {{ showFilters() ? 'Ocultar filtros' : 'Mostrar filtros' }}
-      </button>
+
       @if (showFilters()) {
-        <div class="filters-panel">
-          <div class="filter-group">
-            <label>Piso:</label>
-            <select [(ngModel)]="filterPiso" (ngModelChange)="currentPage.set(1)" class="filter-select">
-              <option value="">Todos</option>
-              @for (piso of pisos; track piso) {
-                <option [value]="piso">{{ piso }}</option>
-              }
-            </select>
+        <div class="filter-panel">
+          <div class="filter-content">
+            <div class="filter-group">
+              <label>Piso:</label>
+              <select [(ngModel)]="filterPiso" (ngModelChange)="currentPage.set(1)" class="form-control">
+                <option value="">Todos</option>
+                @for (piso of pisos; track piso) {
+                  <option [value]="piso">{{ piso }}</option>
+                }
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Estado:</label>
+              <select [(ngModel)]="filterEstado" (ngModelChange)="currentPage.set(1)" class="form-control">
+                <option value="">Todos</option>
+                @for (estado of estados; track estado) {
+                  <option [value]="estado">{{ estado }}</option>
+                }
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Ambiente:</label>
+              <select [(ngModel)]="filterAmbiente" (ngModelChange)="currentPage.set(1)" class="form-control">
+                <option value="">Todos</option>
+                @for (amb of ambientes(); track amb) {
+                  <option [value]="amb">{{ amb }}</option>
+                }
+              </select>
+            </div>
+            <button class="btn btn-sm btn-secondary" (click)="clearFilters()">Limpiar</button>
           </div>
-          <div class="filter-group">
-            <label>Estado:</label>
-            <select [(ngModel)]="filterEstado" (ngModelChange)="currentPage.set(1)" class="filter-select">
-              <option value="">Todos</option>
-              @for (estado of estados; track estado) {
-                <option [value]="estado">{{ estado }}</option>
-              }
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Ambiente:</label>
-            <select [(ngModel)]="filterAmbiente" (ngModelChange)="currentPage.set(1)" class="filter-select">
-              <option value="">Todos</option>
-              @for (amb of ambientes(); track amb) {
-                <option [value]="amb">{{ amb }}</option>
-              }
-            </select>
-          </div>
-          <button class="btn btn-sm btn-secondary" (click)="clearFilters()">Limpiar</button>
         </div>
       }
-    </div>
 
-    <!-- Vista de tabla para desktop (solo si hay categoría seleccionada) -->
-    @if (selectedCategoria()) {
+      <!-- Vista de tabla para desktop -->
       <div class="table-container desktop-only">
         <table class="table">
           <thead>

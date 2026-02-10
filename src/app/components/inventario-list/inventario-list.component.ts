@@ -35,7 +35,18 @@ export class InventarioListComponent implements OnInit {
   readonly filterPiso = signal('');
   readonly filterEstado = signal('');
   readonly filterAmbiente = signal('');
-  readonly filterSearch = signal('');
+
+  readonly hasActiveFilters = computed(() => {
+    return !!this.filterPiso() || !!this.filterEstado() || !!this.filterAmbiente();
+  });
+
+  readonly getActiveFiltersCount = computed(() => {
+    let count = 0;
+    if (this.filterPiso()) count++;
+    if (this.filterEstado()) count++;
+    if (this.filterAmbiente()) count++;
+    return count;
+  });
 
   // Ordenamiento
   readonly sortField = signal<'codigoid' | 'nombre' | 'marca' | 'modelo' | 'ambientecodigo'>('codigoid');
@@ -94,7 +105,6 @@ export class InventarioListComponent implements OnInit {
     const piso = this.filterPiso();
     const estado = this.filterEstado().toLowerCase();
     const ambiente = this.filterAmbiente().toLowerCase();
-    const search = this.filterSearch().toLowerCase();
 
     if (piso) {
       result = result.filter(e => e.piso === piso);
@@ -109,14 +119,6 @@ export class InventarioListComponent implements OnInit {
     if (ambiente) {
       result = result.filter(e =>
         e.ambientecodigo?.toLowerCase().includes(ambiente)
-      );
-    }
-
-    if (search) {
-      result = result.filter(e =>
-        e.nombre?.toLowerCase().includes(search) ||
-        e.marca?.toLowerCase().includes(search) ||
-        e.modelo?.toLowerCase().includes(search)
       );
     }
 
@@ -196,7 +198,6 @@ export class InventarioListComponent implements OnInit {
     this.filterPiso.set('');
     this.filterEstado.set('');
     this.filterAmbiente.set('');
-    this.filterSearch.set('');
     this.currentPage.set(1);
   }
 

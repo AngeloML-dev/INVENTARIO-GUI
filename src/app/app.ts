@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { ToastComponent } from './components/toast/toast.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { AuthModalComponent } from './components/auth-modal/auth-modal.component';
@@ -21,6 +21,7 @@ import { ToastService } from './services/toast.service';
 export class App {
   protected readonly authService = inject(AuthService);
   private readonly toastService = inject(ToastService);
+  private readonly router = inject(Router);
 
   getUserName(): string {
     const user = this.authService.user();
@@ -47,5 +48,7 @@ export class App {
   logout(): void {
     this.authService.signOut();
     this.toastService.success('Sesión cerrada');
+    // Redirigir al home después de cerrar sesión
+    this.router.navigate(['/']);
   }
 }

@@ -22,8 +22,8 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [],
             "index": "src/index.html",
-            "baseHref": "/INVENTARIO-GUI/",
-            "deployUrl": "/INVENTARIO-GUI/",
+            "baseHref": "/",
+            "deployUrl": "/",
             "styles": [
               "src/styles.css"
             ]
